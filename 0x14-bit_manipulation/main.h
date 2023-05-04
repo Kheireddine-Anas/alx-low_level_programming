@@ -3,6 +3,6 @@
 
 int _putchar(char c);
 int get_endianness(void);
-unsigned int binary_to_uint(const char *b)
+unsigned int binary_to_uint(const char *b);
 
 #endif
