@@ -6,21 +6,25 @@
  * @b: char string
  * Return: converted decimal number or 0 if there is an unconvertable char
  */
-
-unsigned int binary_to_uint(const char *b) {
-	unsigned int num = 0;
+unsigned int binary_to_uint(const char *b)
+{
+	unsigned int all, pwr;
+	int sln;
 
 	if (b == NULL)
-		return 0;
-	while (*b) {
-		if (*b != '0' && *b != '1')
-			return 0;
+		return (0);
 
-		num <<= 1;
-		if (*b == '1')
-			num += 1;
-
-		b++;
+	for (sln = 0; b[sln]; sln++)
+	{
+		if (b[sln] != '0' && b[sln] != '1')
+			return (0);
 	}
-	return num;
+
+	for (pwr = 1, all = 0, sln--; sln >= 0; sln--, pwr *= 2)
+	{
+		if (b[sln] == '1')
+			all += pwr;
+	}
+
+	return (all);
 }
