@@ -4,48 +4,48 @@
 #include "main.h"
 
 /**
- * read_textfile - reads a text file and prints it to stdout
- * @filename: name of the file to read
- * @letters: number of letters to read and print
- * Return: read and print, or 0 error
+ * read_textfile - reads a text file and prints it to the POSIX STDOUT
+ * @letters: Max Numbers
+ * Return: Count printed letters, 0 for errors
  */
-
 ssize_t read_textfile(const char *filename, size_t letters)
 {
-	ssize_t nread;
-	char *buffer;
+	int fd;
+	ssize_t num_read, nWR, tWR;
+	char *buf;
 
 	if (filename == NULL)
 		return (0);
 
-	buffer = malloc(sizeof(char) * letters);
-	if (buffer == NULL)
+	fd = open(filename, O_RDONLY);
+	if (fd == -1)
 		return (0);
 
-	FILE *file = fopen(filename, "r");
-	if (file == NULL)
-	{
-		free(buffer);
-		return (0);
-	}
-	
-	nread = fread(buffer, sizeof(char), letters, file);
-	if (nread == 0)
-	{
-		free(buffer);
-		fclose(file);
+	buf = malloc(sizeof(char) * letters);
+	if (buf == NULL) {
+		close(fd);
 		return (0);
 	}
 
-	size_t nwritten = fwrite(buffer, sizeof(char), nread, stdout);
-	if (nwritten != nread)
-	{
-		free(buffer);
-		fclose(file);
+	tWR = 0;
+	while ((num_read = read(fd, buf, letters)) > 0) {
+		nWR = write(STDOUT_FILENO, buf, num_read);
+		if (nWR == -1) {
+			free(buf);
+			close(fd);
+			return (0);
+		}
+		tWR += nWR;
+	}
+
+	if (num_read == -1) {
+		free(buf);
+		close(fd);
 		return (0);
 	}
 
-	free(buffer);
-	fclose(file);
-	return (nwritten);
+	free(buf);
+	close(fd);
+
+	return (tWR);
 }
