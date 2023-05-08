@@ -9,8 +9,6 @@
  * main - Copies the content of a file to another file.
  * @argc: The number of arguments passed to the program.
  * @argv: An array of pointers to the arguments passed to the program.
- * @fd_from: file descriptor for the source file
- * @fd_to: file descriptor for the destination file
  * Return: 0 if successful.
  */
 
