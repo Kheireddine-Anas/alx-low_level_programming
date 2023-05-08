@@ -7,8 +7,9 @@
  * read_textfile - reads a text file and prints it to stdout
  * @filename: name of the file to read
  * @letters: number of letters to read and print
- * Return: actual number of letters read and printed, or 0 if error
+ * Return: read and print, or 0 error
  */
+
 ssize_t read_textfile(const char *filename, size_t letters)
 {
 	ssize_t nread;
