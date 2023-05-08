@@ -5,6 +5,12 @@
 #include <errno.h>
 
 #define BUFSIZE 1024
+/**
+ * main - Copies the content of a file to another file.
+ * @argc: The number of arguments passed to the program.
+ * @argv: An array of pointers to the arguments passed to the program.
+ * Return: 0 if successful.
+ */
 
 int main(int argc, char *argv[]) {
 	int fd_from, fd_to;
@@ -51,5 +57,5 @@ int main(int argc, char *argv[]) {
 		exit(100);
 	}
 
-	return 0;
+	return (0);
 }
