@@ -1,63 +1,38 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include <unistd.h>
-#include <fcntl.h>
-#include <errno.h>
 #include "main.h"
+#include <stdlib.h>
 
 /**
- * read_textfile - reads a text file and prints it to the POSIX STDOUT
- * @filename: pointer to the name of the file to read
- * @letters: maximum number of letters to read from the file
- * Return: number of letters read and printed, or 0 on error
+ * read_textfile - Reads a text file and prints it to standard output.
+ * @filename: PNT => name OF FL
+ * @bytes_to_read: num of bytes.
+ *
+ * Return: FIALS&NULL => 0.
+ *         Otherwise - num of bytes.
  */
-ssize_t read_textfile(const char *filename, size_t letters)
+ssize_t read_textfile(const char *filename, size_t bytes_to_read)
 {
-	int fd;
-	ssize_t num_read, nWR, tWR;
-	char *buf;
+	ssize_t file_descriptor, bytes_read, bytes_written;
+	char *buffer;
 
 	if (filename == NULL)
 		return (0);
 
-	fd = open(filename, O_RDONLY);
-	if (fd == -1)
-	{
-		if (errno == ENOENT || errno == EACCES)
-			return (0);
-		else
-			return (-1);
-	}
+	buffer = malloc(sizeof(char) * bytes_to_read);
+	if (buffer == NULL)
+		return (0);
 
-	buf = malloc(sizeof(char) * letters);
-	if (buf == NULL)
+	file_descriptor = open(filename, O_RDONLY);
+	bytes_read = read(file_descriptor, buffer, bytes_to_read);
+	bytes_written = write(STDOUT_FILENO, buffer, bytes_read);
+
+	if (file_descriptor == -1 || bytes_read == -1 || bytes_written == -1 || bytes_written != bytes_read)
 	{
-		close(fd);
+		free(buffer);
 		return (0);
 	}
 
-	tWR = 0;
-	while ((num_read = read(fd, buf, letters)) > 0)
-	{
-		nWR = write(STDOUT_FILENO, buf, num_read);
-		if (nWR == -1)
-		{
-			free(buf);
-			close(fd);
-			return (0);
-		}
-		tWR += nWR;
-	}
+	free(buffer);
+	close(file_descriptor);
 
-	if (num_read == -1)
-	{
-		free(buf);
-		close(fd);
-		return (0);
-	}
-
-	free(buf);
-	close(fd);
-
-	return (tWR);
+	return (bytes_written);
 }
