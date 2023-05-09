@@ -5,7 +5,6 @@
  * read_textfile - Reads a text file and prints it to standard output.
  * @filename: PNT => name OF FL
  * @bytes_to_read: num of bytes.
- *
  * Return: FIALS&NULL => 0.
  *         Otherwise - num of bytes.
  */
