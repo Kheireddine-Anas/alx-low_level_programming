@@ -10,7 +10,7 @@
  */
 ssize_t read_textfile(const char *filename, size_t bytes_to_read)
 {
-	ssize_t file_descriptor, bytes_read, bytes_written;
+	ssize_t fl_d, bt_rd, bt_wr;
 	char *buffer;
 
 	if (filename == NULL)
@@ -20,18 +20,18 @@ ssize_t read_textfile(const char *filename, size_t bytes_to_read)
 	if (buffer == NULL)
 		return (0);
 
-	file_descriptor = open(filename, O_RDONLY);
-	bytes_read = read(file_descriptor, buffer, bytes_to_read);
-	bytes_written = write(STDOUT_FILENO, buffer, bytes_read);
+	fl_d = open(filename, O_RDONLY);
+	bt_rd = read(fl_d, buffer, bytes_to_read);
+	bt_wr = write(STDOUT_FILENO, buffer, bt_rd);
 
-	if (file_descriptor == -1 || bytes_read == -1 || bytes_written == -1 || bytes_written != bytes_read)
+	if (fl_d == -1 || bt_rd == -1 || bt_wr == -1 || bt_wr != bt_rd)
 	{
 		free(buffer);
 		return (0);
 	}
 
 	free(buffer);
-	close(file_descriptor);
+	close(fl_d);
 
-	return (bytes_written);
+	return (bt_wr);
 }
