@@ -5,33 +5,33 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <stdlib.h>
-void chkELF(unsigned char *ednt);
-void prtMGC(unsigned char *ednt);
-void prtCLS(unsigned char *ednt);
-void prtDT(unsigned char *ednt);
-void prtVRS(unsigned char *ednt);
-void prtBI(unsigned char *ednt);
-void prtSBI(unsigned char *ednt);
-void prtTYP(unsigned int eTP, unsigned char *ednt);
-void prtNTR(unsigned long int eNTR, unsigned char *ednt);
+void chkELF(unsigned char *e_ident);
+void prtMGC(unsigned char *e_ident);
+void prtCLS(unsigned char *e_ident);
+void prtDT(unsigned char *e_ident);
+void prtVRS(unsigned char *e_ident);
+void prtBI(unsigned char *e_ident);
+void prtSBI(unsigned char *e_ident);
+void prtTYP(unsigned int eTP, unsigned char *e_ident);
+void prtNTR(unsigned long int eNTR, unsigned char *e_ident);
 void clsELS(int elf);
 
 /**
  * chkELF - Checks ELF file.
- * @ednt: ELF cntn MGC Num.
+ * @e_ident: ELF cntn MGC Num.
  *
  * Description: EXT with code 98.
  */
-void chkELF(unsigned char *ednt)
+void chkELF(unsigned char *e_ident)
 {
 	int index;
 
 	for (index = 0; index < 4; index++)
 	{
-		if (ednt[index] != 127 &&
-		    ednt[index] != 'E' &&
-		    ednt[index] != 'L' &&
-		    ednt[index] != 'F')
+		if (e_ident[index] != 127 &&
+		    e_ident[index] != 'E' &&
+		    e_ident[index] != 'L' &&
+		    e_ident[index] != 'F')
 		{
 			dprintf(STDERR_FILENO, "Error: Not an ELF file\n");
 			exit(98);
@@ -41,11 +41,11 @@ void chkELF(unsigned char *ednt)
 
 /**
  * prtMGC - Prnt MGC Num ELF.h.
- * @ednt: Pnt to ELF.
+ * @e_ident: Pnt to ELF.
  *
  * Description: Mgc Spred spaces.
  */
-void prtMGC(unsigned char *ednt)
+void prtMGC(unsigned char *e_ident)
 {
 	int index;
 
@@ -53,7 +53,7 @@ void prtMGC(unsigned char *ednt)
 
 	for (index = 0; index < EI_NIDENT; index++)
 	{
-		printf("%02x", ednt[index]);
+		printf("%02x", e_ident[index]);
 
 		if (index == EI_NIDENT - 1)
 			printf("\n");
@@ -64,13 +64,13 @@ void prtMGC(unsigned char *ednt)
 
 /**
  * prtCLS - CLS of ELF.h.
- * @ednt: Pnt to ARRY.
+ * @e_ident: Pnt to ARRY.
  */
-void prtCLS(unsigned char *ednt)
+void prtCLS(unsigned char *e_ident)
 {
 	printf("  Class:                             ");
 
-	switch (ednt[EI_CLASS])
+	switch (e_ident[EI_CLASS])
 	{
 	case ELFCLASSNONE:
 		printf("none\n");
@@ -82,19 +82,19 @@ void prtCLS(unsigned char *ednt)
 		printf("ELF64\n");
 		break;
 	default:
-		printf("<unknown: %x>\n", ednt[EI_CLASS]);
+		printf("<unknown: %x>\n", e_ident[EI_CLASS]);
 	}
 }
 
 /**
  * prtDT - ELF Data.
- * @ednt: Pnt to ARRY.
+ * @e_ident: Pnt to ARRY.
  */
-void prtDT(unsigned char *ednt)
+void prtDT(unsigned char *e_ident)
 {
 	printf("  Data:                              ");
 
-	switch (ednt[EI_DATA])
+	switch (e_ident[EI_DATA])
 	{
 	case ELFDATANONE:
 		printf("none\n");
@@ -106,20 +106,20 @@ void prtDT(unsigned char *ednt)
 		printf("2's complement, big endian\n");
 		break;
 	default:
-		printf("<unknown: %x>\n", ednt[EI_CLASS]);
+		printf("<unknown: %x>\n", e_ident[EI_CLASS]);
 	}
 }
 
 /**
  * prtVRS - VRSN of ELF.
- * @ednt: Pnt to ARRY.
+ * @e_ident: Pnt to ARRY.
  */
-void prtVRS(unsigned char *ednt)
+void prtVRS(unsigned char *e_ident)
 {
 	printf("  Version:                           %d",
-	       ednt[EI_VERSION]);
+	       e_ident[EI_VERSION]);
 
-	switch (ednt[EI_VERSION])
+	switch (e_ident[EI_VERSION])
 	{
 	case EV_CURRENT:
 		printf(" (current)\n");
@@ -132,13 +132,13 @@ void prtVRS(unsigned char *ednt)
 
 /**
  * prtSBI - Prnt ELF.h OS-ABI.
- * @ednt: Pnt to ARRY.
+ * @e_ident: Pnt to ARRY.
  */
-void prtSBI(unsigned char *ednt)
+void prtSBI(unsigned char *e_ident)
 {
 	printf("  OS/ABI:                            ");
 
-	switch (ednt[EI_OSABI])
+	switch (e_ident[EI_OSABI])
 	{
 	case ELFOSABI_NONE:
 		printf("UNIX - System V\n");
@@ -171,28 +171,28 @@ void prtSBI(unsigned char *ednt)
 		printf("Standalone App\n");
 		break;
 	default:
-		printf("<unknown: %x>\n", ednt[EI_OSABI]);
+		printf("<unknown: %x>\n", e_ident[EI_OSABI]);
 	}
 }
 
 /**
  * prtBI - ABI of ELF.
- * @ednt: Pnt to ARRY ABI.
+ * @e_ident: Pnt to ARRY ABI.
  */
-void prtBI(unsigned char *ednt)
+void prtBI(unsigned char *e_ident)
 {
 	printf("  ABI Version:                       %d\n",
-	       ednt[EI_ABIVERSION]);
+	       e_ident[EI_ABIVERSION]);
 }
 
 /**
  * prtTYP - TYP EFL.h
  * @eTP: The ELF TYP.
- * @ednt: Pnt to ARRY.
+ * @e_ident: Pnt to ARRY.
  */
-void prtTYP(unsigned int eTP, unsigned char *ednt)
+void prtTYP(unsigned int eTP, unsigned char *e_ident)
 {
-	if (ednt[EI_DATA] == ELFDATA2MSB)
+	if (e_ident[EI_DATA] == ELFDATA2MSB)
 		eTP >>= 8;
 
 	printf("  Type:                              ");
@@ -222,20 +222,20 @@ void prtTYP(unsigned int eTP, unsigned char *ednt)
 /**
  * prtNTR - ENTRY PNT ELF.
  * @eNTR: ENTRY PNT ELF.
- * @ednt: Pnt to ARRY.
+ * @e_ident: Pnt to ARRY.
  */
-void prtNTR(unsigned long int eNTR, unsigned char *ednt)
+void prtNTR(unsigned long int eNTR, unsigned char *e_ident)
 {
 	printf("  Entry point address:               ");
 
-	if (ednt[EI_DATA] == ELFDATA2MSB)
+	if (e_ident[EI_DATA] == ELFDATA2MSB)
 	{
 		eNTR = ((eNTR << 8) & 0xFF00FF00) |
 			  ((eNTR >> 8) & 0xFF00FF);
 		eNTR = (eNTR << 16) | (eNTR >> 16);
 	}
 
-	if (ednt[EI_CLASS] == ELFCLASS32)
+	if (e_ident[EI_CLASS] == ELFCLASS32)
 		printf("%#x\n", (unsigned int)eNTR);
 
 	else
@@ -293,16 +293,16 @@ int main(int __attribute__((__unused__)) argc, char *argv[])
 		exit(98);
 	}
 
-	chkELF(header->ednt);
+	chkELF(header->e_ident);
 	printf("ELF Header:\n");
-	prtMGC(header->ednt);
-	prtCLS(header->ednt);
-	prtDT(header->ednt);
-	prtVRS(header->ednt);
-	prtSBI(header->ednt);
-	prtBI(header->ednt);
-	prtTYP(header->eTP, header->ednt);
-	prtNTR(header->eNTR, header->ednt);
+	prtMGC(header->e_ident);
+	prtCLS(header->e_ident);
+	prtDT(header->e_ident);
+	prtVRS(header->e_ident);
+	prtSBI(header->e_ident);
+	prtBI(header->e_ident);
+	prtTYP(header->eTP, header->e_ident);
+	prtNTR(header->eNTR, header->e_ident);
 
 	free(header);
 	clsELS(o);
